@@ -3,6 +3,7 @@
 #include "TankAimingComponent.h"
 #include "TankAIController.generated.h"
 #include "Components/StaticMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values for this component's properties
@@ -21,27 +22,47 @@ void UTankAimingComponent::SetBarrelReference(UStaticMeshComponent * BarrelToSet
 	Barrel = BarrelToSet;
 }
 
-// Called when the game starts
-void UTankAimingComponent::BeginPlay()
-{
-	Super::BeginPlay();
 
-	// ...
+
+void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
+{
+	if (!Barrel)
+		return;
+	FVector OutLaunchVelocity;
+	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
+
+	//Calculate the OutLuanchVelocity
+
+	bool bHaveAimSolution = UGameplayStatics::SuggestProjectileVelocity
+	(
+		this,
+		OutLaunchVelocity,
+		StartLocation,
+		HitLocation,
+		LaunchSpeed,
+		ESuggestProjVelocityTraceOption::DoNotTrace
+	);
+
+	if (bHaveAimSolution)
+	{
+		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
+		MoveBarrelTowards(AimDirection);
+	}
+	
+
 	
 }
 
-
-// Called every frame
-void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	// Work-out difference between current barrel rotation, and AimDirection
+	auto BarrelRotation = Barrel->GetForwardVector().Rotation();
+	auto AimAsRotator = AimDirection.Rotation();
+	auto DeltaRotator = AimAsRotator - BarrelRotation;
+	UE_LOG(LogTemp,Warning, TEXT("AimRotator: %s"), *AimAsRotator.ToString()) 
 
-	// ...
-}
+	// Move the barrel the rigth amount this frame
 
-void UTankAimingComponent::AimAt(FVector WorldSpaceAim, float LaunchSpeed)
-{
-	
-	UE_LOG(LogTemp, Warning, TEXT("Firing at: %f"), LaunchSpeed);
+	// Given a max elevation speed, and the frame time
 }
 
