@@ -5,8 +5,11 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "TankAimingComponent.generated.h"
+ 
+// Forward Declaration
+class UTankBarrel;
 
-class UTankBarrel; // Forward Declaration
+//Holds barrel's properties and Elevate Method
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MYPROJECT_API UTankAimingComponent : public UActorComponent
