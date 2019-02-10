@@ -20,7 +20,16 @@ UTankAimingComponent::UTankAimingComponent()
 
 void UTankAimingComponent::SetBarrelReference(UTankBarrel * BarrelToSet)
 {
+	if (!BarrelToSet)
+		return;
 	Barrel = BarrelToSet;
+}
+
+void UTankAimingComponent::SetTurretReference(UTankTurret * TurretToSet)
+{
+	if (!TurretToSet)
+		return;
+	Turret = TurretToSet;
 }
 
 
@@ -71,6 +80,6 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	auto DeltaRotator = AimAsRotator - BarrelRotation;
 	
 
-		Barrel->Elevate(DeltaRotator.Pitch); // Remove magic number
+		Barrel->Elevate(DeltaRotator.Pitch); 
 }
 
