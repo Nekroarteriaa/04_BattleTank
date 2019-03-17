@@ -18,14 +18,11 @@ class MYPROJECT_API ATankAIController : public AAIController
 	GENERATED_BODY()
 
 public:
-	ATank* GetControlledTank() const;
-
 	virtual void BeginPlay() override;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	ATank* GetPlayerTank() const;
 
 	
 };
